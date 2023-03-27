@@ -4,20 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.parser.PdfTextExtractor;
+
 public class KWIC {
 
-    private static HashMap<Integer, String> characters   = new HashMap<>();
-    private static ArrayList<Integer> index              = new ArrayList<>();
-    private static ArrayList<Integer> alphabetizedIndex  = new ArrayList<>();
+    private static ArrayList<String> keyWords               = new ArrayList<>();
+    private static HashMap<Integer, String> characters      = new HashMap<>();
+
+    private static ArrayList<Integer> index                 = new ArrayList<>();
+    private static ArrayList<Integer> alphabetizedIndex     = new ArrayList<>();
 
     public static void main(String[] args) {
 
         try {
 
             input();
-            circularShift();
-            alphabetizer();
-            output();
+            seekKeyWords();
+            // alphabetizer();
+            // output();
 
         } catch (IOException e) {
 
@@ -28,44 +33,65 @@ public class KWIC {
     }
 
     public static void input() throws IOException {
-        
-        Scanner scanner = new Scanner(new FileReader("ejemplo.txt"));
 
-        int lineIndex = 0;
+        // Leemos las palabras claves
+        Scanner scanner = new Scanner(new FileReader("resources/palabrasClaves.txt"));
 
         while (scanner.hasNextLine()) {
 
             String line = scanner.nextLine();
-            characters.put(lineIndex, line);
 
-            lineIndex++;
+            if(line.isEmpty())
+                continue;
+
+            keyWords.add(line);
 
         }
+        
+        // Leemos el pdf o docx
+        PdfReader reader = new PdfReader("resources/libro.pdf");
+        int numPages = reader.getNumberOfPages();
 
-        scanner.close();
+        int lineIndex = 0;
+
+        for (int i = 1; i <= numPages; i++) {
+
+            String page = PdfTextExtractor.getTextFromPage(reader, i);
+
+            String lines[] = page.split("\n");
+
+            for (String line : lines) {
+
+                if(line.isEmpty())
+                    continue;
+
+                characters.put(lineIndex, line +"#"+ i);
+                lineIndex++;
+
+            }
+            
+        }
+
+        reader.close();
 
     }
 
-    public static void circularShift() {
+    public static void seekKeyWords() {
 
-        int finalIndex = characters.size();
+        for(String keyWord : keyWords) {
+                
+            keyWord = keyWord.toUpperCase();
 
-        for (int i = 0; i < finalIndex; i++) {
+            for(int i = 0; i < characters.size(); i++) {
 
-            String line = characters.get(i);
+                String line = characters.get(i).toUpperCase();
 
-            String[] words = line.split("\\s+");
+                if (line.contains(keyWord)) {
 
-            index.add(i);
+                    index.add(i);
+                    break;
 
-            for (int j = 1; j < words.length; j++) {
-
-                int wordIndex = line.indexOf(words[j]);
-
-                String lineCircularShifted = line.substring(wordIndex) + " " + line.substring(0, wordIndex);
-
-                index.add(characters.size());
-                characters.put(characters.size(), lineCircularShifted);
+                }
 
             }
 
