@@ -29,7 +29,7 @@ public class KWIC {
 
     public static void input() throws IOException {
         
-        Scanner scanner = new Scanner(new FileReader("ejemplo.txt"));
+        Scanner scanner = new Scanner(new FileReader("resources/ejemplo.txt"));
 
         int lineIndex = 0;
 
