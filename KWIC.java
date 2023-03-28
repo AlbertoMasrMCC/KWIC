@@ -9,20 +9,19 @@ import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 
 public class KWIC {
 
-    private static ArrayList<String> keyWords               = new ArrayList<>();
-    private static HashMap<Integer, String> characters      = new HashMap<>();
+    private static HashMap<Integer, String> characters  = new HashMap<>();
+    private static ArrayList<Integer> index             = new ArrayList<>();
+    private static ArrayList<Integer> alphabetizedIndex = new ArrayList<>();
 
-    private static ArrayList<Integer> index                 = new ArrayList<>();
-    private static ArrayList<Integer> alphabetizedIndex     = new ArrayList<>();
+    private static HashMap<Integer, ArrayList<Integer>> charactersPages  = new HashMap<>();
 
     public static void main(String[] args) {
 
         try {
 
             input();
-            seekKeyWords();
-            // alphabetizer();
-            // output();
+            alphabetizer();
+            output();
 
         } catch (IOException e) {
 
@@ -34,68 +33,67 @@ public class KWIC {
 
     public static void input() throws IOException {
 
-        // Leemos las palabras claves
-        Scanner scanner = new Scanner(new FileReader("resources/palabrasClaves.txt"));
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Escribe el nombre del archivo de palabras claves que desea leer: ");
+        String nombreArchivo = scanner.nextLine();
+
+        if(!nombreArchivo.contains(".txt")) {
+
+            System.out.println("El archivo no es válido");
+            System.exit(0);
+
+        }
+
+        scanner = new Scanner(new FileReader("resources/"+ nombreArchivo));
+
+        int indexLine = 0;
 
         while (scanner.hasNextLine()) {
 
             String line = scanner.nextLine();
 
-            if(line.isEmpty())
+            if(line.isEmpty() || characters.containsValue(line))
                 continue;
 
-            keyWords.add(line);
+            characters.put(indexLine, line);
+            charactersPages.put(indexLine, new ArrayList<>());
+            index.add(indexLine);
+            indexLine++;
 
         }
-        
-        // Leemos el pdf o docx
-        PdfReader reader = new PdfReader("resources/libro.pdf");
-        int numPages = reader.getNumberOfPages();
 
-        int lineIndex = 0;
+        scanner = new Scanner(System.in);
+        System.out.print("Escribe el nombre del archivo que quieres leer: ");
+        nombreArchivo = scanner.nextLine();
+
+        if(!nombreArchivo.contains(".pdf") && !nombreArchivo.contains(".docx")) {
+
+            System.out.println("El archivo no es válido");
+            System.exit(0);
+
+        }
+
+        PdfReader reader = new PdfReader("resources/"+ nombreArchivo);
+        int numPages = reader.getNumberOfPages();
 
         for (int i = 1; i <= numPages; i++) {
 
             String page = PdfTextExtractor.getTextFromPage(reader, i);
 
-            String lines[] = page.split("\n");
+            for(int j = 0; j < characters.size(); j++) {
 
-            for (String line : lines) {
+                if(page.contains(characters.get(j))) {
 
-                if(line.isEmpty())
-                    continue;
+                    charactersPages.get(j).add(i);
 
-                characters.put(lineIndex, line +"#"+ i);
-                lineIndex++;
+                }
 
             }
             
         }
 
+        scanner.close();
         reader.close();
-
-    }
-
-    public static void seekKeyWords() {
-
-        for(String keyWord : keyWords) {
-                
-            keyWord = keyWord.toUpperCase();
-
-            for(int i = 0; i < characters.size(); i++) {
-
-                String line = characters.get(i).toUpperCase();
-
-                if (line.contains(keyWord)) {
-
-                    index.add(i);
-                    break;
-
-                }
-
-            }
-
-        }
 
     }
 
@@ -129,9 +127,12 @@ public class KWIC {
 
     public static void output() {
 
-        for (int i = 0; i < alphabetizedIndex.size(); i++) {
+        System.out.println("\nPalabras claves encontradas: ");
+        System.out.println("----------------------------");
 
-            System.out.println(characters.get(alphabetizedIndex.get(i)));
+        for(int i = 0; i < alphabetizedIndex.size(); i++) {
+
+            System.out.println(characters.get(alphabetizedIndex.get(i)) + " - " + charactersPages.get(alphabetizedIndex.get(i)));
 
         }
 
