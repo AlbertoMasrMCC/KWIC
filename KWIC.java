@@ -7,6 +7,8 @@ import java.util.Scanner;
 
 public class KWIC {
 
+    private static ArrayList<String> keyWords          = new ArrayList<>();
+
     private static HashMap<Integer, String> characters  = new HashMap<>();
     private static ArrayList<Integer> index             = new ArrayList<>();
     private static ArrayList<Integer> alphabetizedIndex = new ArrayList<>();
@@ -16,6 +18,7 @@ public class KWIC {
         try {
 
             input();
+            getFiles(new File("resources"), 0);
             alphabetizer();
             output();
 
@@ -42,8 +45,6 @@ public class KWIC {
 
         scanner = new Scanner(new FileReader("resources/"+ nombreArchivo));
 
-        ArrayList<String> keyWords = new ArrayList<>();
-
         while (scanner.hasNextLine()) {
 
             String line = scanner.nextLine();
@@ -55,33 +56,48 @@ public class KWIC {
 
         }
 
-        int indexLine = 0;
+        scanner.close();
 
-        File folder = new File("resources");
+    }
+
+    public static void getFiles(File folder, int indexLine) {
+        
         File[] listOfFiles = folder.listFiles();
 
-        for(int i = 0; i < keyWords.size(); i++) {
+        for(int i = 0; i < listOfFiles.length; i++) {
 
-            for(int j = 0; j < listOfFiles.length; j++) {
+            for(int j = 0; j < keyWords.size(); j++) {
 
-                if(!listOfFiles[j].isFile())
-                    continue;
+                if(listOfFiles[i].isDirectory()){
 
-                if(!listOfFiles[j].getName().contains(keyWords.get(i)))
-                    continue;
+                    if(listOfFiles[i].listFiles().length == 0)
+                        continue;
+                        
+                    getFiles(listOfFiles[i], indexLine);
+                    
 
-                if(characters.containsValue(listOfFiles[j].getName()))
-                    continue;
+                    break;
+                    
+                }
+                else {
+                        
+                    if(!listOfFiles[i].getName().contains(keyWords.get(j)))
+                        continue;
 
-                characters.put(indexLine, listOfFiles[j].getName());
-                index.add(indexLine);
-                indexLine++;
+                    if(characters.containsValue(listOfFiles[i].getName() +".txt"))
+                        continue;
+
+                    characters.put(indexLine, listOfFiles[i].getName());
+                    index.add(indexLine);
+                    indexLine++;
+
+                    break;
+
+                }
 
             }
 
         }
-
-        scanner.close();
 
     }
 
