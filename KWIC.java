@@ -13,12 +13,15 @@ public class KWIC {
     private static ArrayList<Integer> index             = new ArrayList<>();
     private static ArrayList<Integer> alphabetizedIndex = new ArrayList<>();
 
+    private static int indexLine = 0;
+
+
     public static void main(String[] args) {
 
         try {
 
             input();
-            getFiles(new File("resources"), 0);
+            getFiles(new File("resources"));
             alphabetizer();
             output();
 
@@ -60,7 +63,7 @@ public class KWIC {
 
     }
 
-    public static void getFiles(File folder, int indexLine) {
+    public static void getFiles(File folder) {
         
         File[] listOfFiles = folder.listFiles();
 
@@ -73,7 +76,7 @@ public class KWIC {
                     if(listOfFiles[i].listFiles().length == 0)
                         continue;
                         
-                    getFiles(listOfFiles[i], indexLine);
+                    getFiles(listOfFiles[i]);
                     
 
                     break;
@@ -81,10 +84,10 @@ public class KWIC {
                 }
                 else {
                         
-                    if(!listOfFiles[i].getName().contains(keyWords.get(j)))
+                    if(!listOfFiles[i].getName().contains(keyWords.get(j) +".txt"))
                         continue;
 
-                    if(characters.containsValue(listOfFiles[i].getName() +".txt"))
+                    if(characters.containsValue(listOfFiles[i].getName()))
                         continue;
 
                     characters.put(indexLine, listOfFiles[i].getName());
