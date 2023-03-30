@@ -39,7 +39,7 @@ public class KWIC {
 
         if(!nombreArchivo.contains(".txt")) {
 
-            System.out.println("El archivo no es válido");
+            System.out.println("El archivo no es válido, debe ser un archivo con extensión .txt");
             System.exit(0);
 
         }
@@ -68,7 +68,7 @@ public class KWIC {
 
         if(!nombreArchivo.contains(".pdf") && !nombreArchivo.contains(".docx")) {
 
-            System.out.println("El archivo no es válido");
+            System.out.println("El archivo no es válido, debe ser un archivo con extensión .pdf o .docx");
             System.exit(0);
 
         }
