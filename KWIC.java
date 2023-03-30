@@ -41,7 +41,7 @@ public class KWIC {
 
         if(!nombreArchivo.contains(".txt")) {
 
-            System.out.println("El archivo no es válido");
+            System.out.println("El archivo no es válido, debe ser un archivo con extensión .txt");
             System.exit(0);
 
         }
