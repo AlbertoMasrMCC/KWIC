@@ -1,9 +1,16 @@
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.DocumentException;
 
 public class KWIC {
 
@@ -25,6 +32,10 @@ public class KWIC {
         } catch (IOException e) {
 
             System.err.println("Error al leer el archivo: "+ e.getMessage());
+
+        } catch (DocumentException e) {
+
+            System.err.println("Error al crear el archivo: "+ e.getMessage());
 
         }
 
@@ -127,16 +138,36 @@ public class KWIC {
 
     }
 
-    public static void output() {
+    public static void output() throws IOException, DocumentException {
 
-        System.out.println("\nPalabras claves encontradas: ");
-        System.out.println("----------------------------");
+        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+
+        String fileName = "resources/archivoSalida.pdf";
+
+        File file = new File(fileName);
+
+        if (file.exists()) {
+            if (!file.delete()) {
+                System.out.println("No se pudo eliminar el archivo: " + fileName);
+                System.exit(0);
+            } 
+        }
+
+        PdfWriter.getInstance(document, new FileOutputStream(fileName));
+
+        document.open();
+
+        document.add(new Paragraph("Palabras Claves:"));
 
         for(int i = 0; i < alphabetizedIndex.size(); i++) {
 
-            System.out.println(characters.get(alphabetizedIndex.get(i)));
-
+            document.add(new Paragraph(characters.get(alphabetizedIndex.get(i))));
+                
         }
+
+        document.close();
+
+        System.out.println("El archivo se ha creado exitosamente");
 
     }
 
