@@ -10,7 +10,6 @@ classDiagram
         - characters
         - index
         - alphabetizedIndex
-        - charactersPages
         - keyWords
         + main()
         + input()

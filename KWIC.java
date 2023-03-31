@@ -19,6 +19,8 @@ public class KWIC {
     private static ArrayList<Integer> alphabetizedIndex = new ArrayList<>();
 
     private static ArrayList<String> keyWords           = new ArrayList<>();
+    private static HashMap<Integer, String> paths       = new HashMap<>();
+    private static HashMap<Integer, String> extensions  = new HashMap<>();
 
     public static void main(String[] args) {
 
@@ -72,17 +74,17 @@ public class KWIC {
     }
 
     public static void getFiles(File folder) {
-        
+
         File[] listOfFiles = folder.listFiles();
+
+        if(listOfFiles.length == 0)
+            return;
 
         for(int i = 0; i < listOfFiles.length; i++) {
 
             for(int j = 0; j < keyWords.size(); j++) {
 
                 if(listOfFiles[i].isDirectory()){
-
-                    if(listOfFiles[i].listFiles().length == 0)
-                        continue;
                         
                     getFiles(listOfFiles[i]);
 
@@ -90,15 +92,35 @@ public class KWIC {
                     
                 }
                 else {
+
+                    boolean exists = false;
                         
                     if(!listOfFiles[i].getName().contains(keyWords.get(j) +"."))
+                        continue;
+
+                    for(int k = 0; k < characters.size(); k++)
+                    {
+
+                        if((characters.get(k) +"."+ extensions.get(k)).equals(listOfFiles[i].getName()))
+                        {
+
+                            exists = true;
+                            break;
+
+                        }
+
+                    }
+
+                    if(exists)
                         continue;
 
                     if(characters.containsValue(listOfFiles[i].getName()))
                         continue;
 
                     index.add(characters.size());
-                    characters.put(characters.size(), listOfFiles[i].getName());
+                    characters.put(characters.size(), listOfFiles[i].getName().split("\\.")[0]);
+                    extensions.put(characters.size(), listOfFiles[i].getName().split("\\.")[1]);
+                    paths.put(characters.size(), listOfFiles[i].getAbsolutePath());
 
                     break;
 
@@ -118,7 +140,7 @@ public class KWIC {
 
             for (int j = 0; j < i; j++) {
 
-                if (characters.get(index.get(i)).toUpperCase().split("\\.")[0].compareTo(characters.get(alphabetizedIndex.get(j)).toUpperCase().split("\\.")[0]) < 0) {
+                if (characters.get(index.get(i)).toUpperCase().compareTo(characters.get(alphabetizedIndex.get(j)).toUpperCase()) < 0) {
 
                     alphabetizedIndex.add(j, index.get(i));
                     break;
@@ -161,7 +183,7 @@ public class KWIC {
 
         for(int i = 0; i < alphabetizedIndex.size(); i++) {
 
-            document.add(new Paragraph(characters.get(alphabetizedIndex.get(i))));
+            document.add(new Paragraph(paths.get(alphabetizedIndex.get(i)) +"/"+ characters.get(alphabetizedIndex.get(i)) + "." + extensions.get(alphabetizedIndex.get(i))));
                 
         }
 
