@@ -3,3 +3,5 @@ ingeniería
 software
 sistema
 ingeniería de software
+análisis de algoritmos
+POO

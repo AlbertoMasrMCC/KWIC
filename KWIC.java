@@ -35,16 +35,16 @@ public class KWIC {
 
         Scanner scanner = new Scanner(System.in);
         System.out.print("Escribe el nombre del archivo de palabras claves que desea leer: ");
-        String nombreArchivo = scanner.nextLine();
+        String fileName = scanner.nextLine();
 
-        if(!nombreArchivo.contains(".txt")) {
+        if(!fileName.contains(".txt")) {
 
             System.out.println("El archivo no es válido, debe ser un archivo con extensión .txt");
             System.exit(0);
 
         }
 
-        scanner = new Scanner(new FileReader("resources/"+ nombreArchivo));
+        scanner = new Scanner(new FileReader("resources/"+ fileName));
 
         int indexLine = 0;
 
@@ -64,16 +64,16 @@ public class KWIC {
 
         scanner = new Scanner(System.in);
         System.out.print("Escribe el nombre del archivo que quieres leer: ");
-        nombreArchivo = scanner.nextLine();
+        fileName = scanner.nextLine();
 
-        if(!nombreArchivo.contains(".pdf") && !nombreArchivo.contains(".docx")) {
+        if(!fileName.contains(".pdf") && !fileName.contains(".docx")) {
 
             System.out.println("El archivo no es válido, debe ser un archivo con extensión .pdf o .docx");
             System.exit(0);
 
         }
 
-        PdfReader reader = new PdfReader("resources/"+ nombreArchivo);
+        PdfReader reader = new PdfReader("resources/"+ fileName);
         int numPages = reader.getNumberOfPages();
 
         for (int i = 1; i <= numPages; i++) {
@@ -132,6 +132,9 @@ public class KWIC {
 
         for(int i = 0; i < alphabetizedIndex.size(); i++) {
 
+            if(charactersPages.get(alphabetizedIndex.get(i)).isEmpty())
+                continue;
+                
             System.out.println(characters.get(alphabetizedIndex.get(i)) + " - " + charactersPages.get(alphabetizedIndex.get(i)));
 
         }
