@@ -12,7 +12,6 @@ classDiagram
         - alphabetizedIndex
         - charactersPages
         - keyWords
-        - indexLine
         + main()
         + input()
         + getFiles(File file)

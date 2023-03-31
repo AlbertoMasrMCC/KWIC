@@ -7,14 +7,11 @@ import java.util.Scanner;
 
 public class KWIC {
 
-    private static ArrayList<String> keyWords          = new ArrayList<>();
-
     private static HashMap<Integer, String> characters  = new HashMap<>();
     private static ArrayList<Integer> index             = new ArrayList<>();
     private static ArrayList<Integer> alphabetizedIndex = new ArrayList<>();
 
-    private static int indexLine = 0;
-
+    private static ArrayList<String> keyWords           = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -37,16 +34,16 @@ public class KWIC {
 
         Scanner scanner = new Scanner(System.in);
         System.out.print("Escribe el nombre del archivo de palabras claves que desea leer: ");
-        String nombreArchivo = scanner.nextLine();
+        String fileName = scanner.nextLine();
 
-        if(!nombreArchivo.contains(".txt")) {
+        if(!fileName.contains(".txt")) {
 
             System.out.println("El archivo no es válido, debe ser un archivo con extensión .txt");
             System.exit(0);
 
         }
 
-        scanner = new Scanner(new FileReader("resources/"+ nombreArchivo));
+        scanner = new Scanner(new FileReader("resources/"+ fileName));
 
         while (scanner.hasNextLine()) {
 
@@ -77,22 +74,20 @@ public class KWIC {
                         continue;
                         
                     getFiles(listOfFiles[i]);
-                    
 
                     break;
                     
                 }
                 else {
                         
-                    if(!listOfFiles[i].getName().contains(keyWords.get(j) +".txt"))
+                    if(!listOfFiles[i].getName().contains(keyWords.get(j) +"."))
                         continue;
 
                     if(characters.containsValue(listOfFiles[i].getName()))
                         continue;
 
-                    characters.put(indexLine, listOfFiles[i].getName());
-                    index.add(indexLine);
-                    indexLine++;
+                    index.add(characters.size());
+                    characters.put(characters.size(), listOfFiles[i].getName());
 
                     break;
 
