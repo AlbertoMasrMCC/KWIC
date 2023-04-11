@@ -43,20 +43,37 @@ public class KWIC {
 
     }
 
-    public static void input() throws IOException {
+    public static void input(){
 
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Escribe el nombre del archivo de palabras claves que desea leer: ");
-        String fileName = scanner.nextLine();
 
-        if(!fileName.contains(".txt")) {
+        boolean continueLoop = true;
 
-            System.out.println("El archivo no es válido, debe ser un archivo con extensión .txt");
-            System.exit(0);
+        while(continueLoop) {
+
+            System.out.print("Escribe el nombre del archivo de palabras claves que desea leer: ");
+            String fileName = scanner.nextLine();
+
+            if(!fileName.contains(".txt")) {
+
+                System.out.println("El archivo no es válido, debe ser un archivo con extensión .txt\n");
+                continue;
+
+            }
+
+            try {
+
+                scanner = new Scanner(new FileReader("resources/"+ fileName));
+
+                continueLoop = false;
+
+            } catch (IOException e) {
+
+                System.out.println("El archivo no existe, por favor ingrese un archivo válido\n");
+
+            }
 
         }
-
-        scanner = new Scanner(new FileReader("resources/"+ fileName));
 
         while (scanner.hasNextLine()) {
 
@@ -87,8 +104,6 @@ public class KWIC {
                 if(listOfFiles[i].isDirectory()){
                         
                     getFiles(listOfFiles[i]);
-
-                    break;
                     
                 }
                 else {
@@ -98,11 +113,9 @@ public class KWIC {
                     if(!listOfFiles[i].getName().contains(keyWords.get(j) +"."))
                         continue;
 
-                    for(int k = 0; k < characters.size(); k++)
-                    {
+                    for(int k = 0; k < characters.size(); k++) {
 
-                        if((characters.get(k) +"."+ extensions.get(k)).equals(listOfFiles[i].getName()))
-                        {
+                        if((characters.get(k) +"."+ extensions.get(k)).equals(listOfFiles[i].getName())) {
 
                             exists = true;
                             break;
@@ -118,11 +131,9 @@ public class KWIC {
                         continue;
 
                     index.add(characters.size());
-                    characters.put(characters.size(), listOfFiles[i].getName().split("\\.")[0]);
-                    extensions.put(characters.size(), listOfFiles[i].getName().split("\\.")[1]);
                     paths.put(characters.size(), listOfFiles[i].getAbsolutePath());
-
-                    break;
+                    extensions.put(characters.size(), listOfFiles[i].getName().split("\\.")[1]);
+                    characters.put(characters.size(), listOfFiles[i].getName().split("\\.")[0]);
 
                 }
 
@@ -169,10 +180,14 @@ public class KWIC {
         File file = new File(fileName);
 
         if (file.exists()) {
+
             if (!file.delete()) {
+
                 System.out.println("No se pudo eliminar el archivo: " + fileName);
                 System.exit(0);
+
             } 
+
         }
 
         PdfWriter.getInstance(document, new FileOutputStream(fileName));
@@ -183,7 +198,7 @@ public class KWIC {
 
         for(int i = 0; i < alphabetizedIndex.size(); i++) {
 
-            document.add(new Paragraph(paths.get(alphabetizedIndex.get(i)) +"/"+ characters.get(alphabetizedIndex.get(i)) + "." + extensions.get(alphabetizedIndex.get(i))));
+            document.add(new Paragraph(paths.get(alphabetizedIndex.get(i))));
                 
         }
 
