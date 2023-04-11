@@ -44,18 +44,37 @@ public class KWIC {
 
     public static void input() throws IOException {
 
+        String fileName = "";
+
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Escribe el nombre del archivo de palabras claves que desea leer: ");
-        String fileName = scanner.nextLine();
 
-        if(!fileName.contains(".txt")) {
+        boolean continueLoop = true;
 
-            System.out.println("El archivo no es válido, debe ser un archivo con extensión .txt");
-            System.exit(0);
+        while(continueLoop) {
+
+            System.out.print("Escribe el nombre del archivo de palabras claves que desea leer: ");
+            fileName = scanner.nextLine();
+
+            if(!fileName.contains(".txt")) {
+
+                System.out.println("El archivo no es válido, debe ser un archivo con extensión .txt\n");
+                continue;
+
+            }
+
+            try {
+
+                scanner = new Scanner(new FileReader("resources/"+ fileName));
+                continueLoop = false;
+
+            } catch (IOException e) {
+
+                System.out.println("El archivo no existe, intenta de nuevo\n");
+                continue;
+
+            }
 
         }
-
-        scanner = new Scanner(new FileReader("resources/"+ fileName));
 
         int indexLine = 0;
 
@@ -74,13 +93,30 @@ public class KWIC {
         }
 
         scanner = new Scanner(System.in);
-        System.out.print("Escribe el nombre del archivo que quieres leer: ");
-        fileName = scanner.nextLine();
 
-        if(!fileName.contains(".pdf") && !fileName.contains(".docx")) {
+        continueLoop = true;
 
-            System.out.println("El archivo no es válido, debe ser un archivo con extensión .pdf o .docx");
-            System.exit(0);
+        while(continueLoop) {
+
+            System.out.print("Escribe el nombre del archivo de texto que desea leer: ");
+            fileName = scanner.nextLine();
+
+            if(!fileName.contains(".pdf") && !fileName.contains(".docx")) {
+
+                System.out.println("El archivo no es válido, debe ser un archivo con extensión .pdf o .docx\n");
+
+            }
+
+            try {
+
+                scanner = new Scanner(new FileReader("resources/"+ fileName));
+                continueLoop = false;
+
+            } catch (IOException e) {
+
+                System.out.println("El archivo no existe, intenta de nuevo\n");
+
+            }
 
         }
 
